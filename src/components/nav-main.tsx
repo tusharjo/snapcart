@@ -14,14 +14,15 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
-import {
-  Link,
-  useLocation,
-  useParams,
-  useSearchParams,
-} from "react-router-dom";
 import { useCartStore } from "@/store/cart";
 import { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+
+type TitleStatus = {
+  [key: string]: boolean | TitleStatus;
+};
+
+type Item = { title: string; url: string; isActive?: boolean; items?: Item[] };
 
 export function NavMain({
   items,
@@ -31,14 +32,11 @@ export function NavMain({
     url: string;
     icon?: LucideIcon;
     isActive?: boolean;
-    items?: {
-      title: string;
-      url: string;
-    }[];
+    items?: Item[];
   }[];
 }) {
-  const getAllTitleStatus = (items) => {
-    return items.reduce((acc, item) => {
+  const getAllTitleStatus = (items: Item[]) => {
+    return items.reduce<TitleStatus>((acc, item) => {
       if (item.items?.length) {
         acc[item.title] = getAllTitleStatus(item.items);
       } else {
@@ -47,8 +45,6 @@ export function NavMain({
       return acc;
     }, {});
   };
-
-  console.log(getAllTitleStatus(items), items, "getAllTitleWithStatus");
 
   // set sidebar items active
   const [activeItem, setActiveItem] = useState(getAllTitleStatus(items));
@@ -70,7 +66,12 @@ export function NavMain({
 
     // Set the clicked item to true
     if (subTitle) {
-      newActiveItem[title][subTitle] = true;
+      if (
+        typeof newActiveItem[title] === "object" &&
+        newActiveItem[title] !== null
+      ) {
+        (newActiveItem[title] as TitleStatus)[subTitle] = true;
+      }
     } else {
       newActiveItem[title] = true;
     }
@@ -93,7 +94,7 @@ export function NavMain({
           <Collapsible
             key={item.title}
             asChild
-            defaultOpen={activeItem}
+            defaultOpen={!!activeItem[item.title]}
             className="group/collapsible"
           >
             <SidebarMenuItem>
@@ -103,7 +104,10 @@ export function NavMain({
                     tooltip={item.title}
                     isActive={
                       path === item.title.toLowerCase() ||
-                      activeItem[item.title]
+                      !!(
+                        typeof activeItem[item.title] === "boolean" &&
+                        activeItem[item.title]
+                      )
                     }
                   >
                     {item.icon && <item.icon />}
@@ -115,7 +119,11 @@ export function NavMain({
                 <SidebarMenuButton
                   tooltip={item.title}
                   isActive={
-                    path === item.title.toLowerCase() || activeItem[item.title]
+                    path === item.title.toLowerCase() ||
+                    !!(
+                      typeof activeItem[item.title] === "boolean" &&
+                      activeItem[item.title]
+                    )
                   }
                 >
                   {item.icon && <item.icon />}
@@ -133,10 +141,7 @@ export function NavMain({
                 <SidebarMenuSub>
                   {item.items?.map((subItem) => (
                     <SidebarMenuSubItem key={subItem.title}>
-                      <SidebarMenuSubButton
-                        asChild
-                        isActive={activeItem[item.title]?.[subItem.title]}
-                      >
+                      <SidebarMenuSubButton asChild>
                         <Link
                           to={subItem.url}
                           className="flex w-full h-full"
