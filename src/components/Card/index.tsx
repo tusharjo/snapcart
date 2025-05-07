@@ -17,16 +17,20 @@ export const ProductImage = ({ src, alt }: { src: string; alt: string }) => {
   const [hasError, setHasError] = useState(false);
 
   return (
-    <div style={{ position: "relative" }}>
+    <div style={{ position: "relative", width: "100%" }}>
       {!isLoaded && !hasError && (
-        <Skeleton className="h-[215px] w-[215px] rounded-xl" />
+        <Skeleton className="h-[215px] w-full rounded-xl mb-4" />
       )}
       {hasError && <div>Image not available</div>}
 
       <img
         src={src}
         alt={alt}
-        style={{ display: isLoaded ? "block" : "none", width: "100%" }}
+        style={{
+          display: isLoaded ? "block" : "none",
+          width: "100%",
+          height: "100%",
+        }}
         onLoad={() => setIsLoaded(true)}
         onError={() => setHasError(true)}
       />

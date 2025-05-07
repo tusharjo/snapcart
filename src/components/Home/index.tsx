@@ -72,11 +72,14 @@ const Home = () => {
         {apiQuery.isPending &&
           skipCount === 0 &&
           Array.from({ length: PRODUCT_COUNT }).map((_, index) => (
-            <div className="flex flex-col space-y-3" key={index}>
-              <Skeleton className="h-[262px] w-[250px] rounded-xl" />
+            <div
+              className="flex flex-col space-y-3 border rounded-xl p-6"
+              key={index}
+            >
+              <Skeleton className="h-[200px] w-full sm:h-[220px] sm:w-full md:h-[240px] md:w-full lg:h-[262px] lg:w-full rounded-xl" />
               <div className="space-y-2">
-                <Skeleton className="h-4 w-[250px]" />
-                <Skeleton className="h-4 w-[200px]" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-[80%]" />
               </div>
             </div>
           ))}
