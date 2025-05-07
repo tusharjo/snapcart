@@ -85,8 +85,6 @@ export function NavMain({
 
   const path = pathname.split("/")[1]; // gets 'cart' from '/cart'
 
-  console.log(activeItem, path, "activeItemactiveItemactiveItem");
-
   return (
     <SidebarGroup>
       <SidebarMenu>

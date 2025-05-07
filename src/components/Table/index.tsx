@@ -67,12 +67,9 @@ const TableDemo = () => {
           e.preventDefault();
           const formData = new FormData(e.currentTarget);
 
-          const invoiceNumber = formData.get("invoiceNumber");
           const paymentStatus = formData.get("paymentStatus");
           const totalAmount = formData.get("totalAmount");
           const paymentMethod = formData.get("paymentMethod");
-
-          console.log(e.currentTarget, invoiceNumber);
 
           const newInvoice = {
             invoice: `INV${invoicesList.length + 1}`,
